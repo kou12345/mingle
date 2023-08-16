@@ -1,16 +1,9 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { Database } from "../../../database.types";
 
-export async function GET(
-  req: NextRequest,
-  {
-    params,
-  }: {
-    params: { userId: string };
-  }
-) {
+export async function GET({ params }: { params: { userId: string } }) {
   const supabase = createServerComponentClient<Database>({ cookies });
 
   const userId = params.userId;
@@ -27,14 +20,12 @@ export async function GET(
     }
 
     if (data) {
-      // jsonに変換して返す
-      return NextResponse.json(data);
+      return NextResponse.json({ data }, { status: 200 });
     }
   } catch (error) {
-    console.log("error", error);
-    throw error;
+    if (error instanceof Error) {
+      console.error("error", error.message);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
   }
-
-  // console.log("userName", userName);
-  // return NextResponse.json({ userName });
 }
