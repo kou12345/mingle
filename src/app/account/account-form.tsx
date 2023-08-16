@@ -18,9 +18,11 @@ export default function AccountForm({ session }: { session: Session | null }) {
 
   console.log(user);
 
-  console.log(fullname);
+  // console.log(fullname);
 
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+  console.log(`/${user?.id}/`);
 
   // app/[userName]/route.tsにRequestする
   const { data, error, isLoading } = useSWR(`/${user?.id}/`, fetcher);
@@ -36,25 +38,31 @@ export default function AccountForm({ session }: { session: Session | null }) {
 
   return (
     <div>
-      <label htmlFor="email">Email</label>
-      <input type="text" defaultValue={user?.email} disabled />
+      <form action={`/${user?.id}/`} method="post">
+        <label htmlFor="email">Email</label>
+        <input type="text" defaultValue={user?.email} disabled />
 
-      <label htmlFor="fullname">Full Name</label>
-      <input
-        type="text"
-        defaultValue={data.full_name || ""}
-        onChange={(e) => setFullname(e.target.value)}
-      />
+        <label htmlFor="fullname">Full Name</label>
+        <input
+          type="text"
+          name="fullname"
+          defaultValue={data.full_name || ""}
+          onChange={(e) => setFullname(e.target.value)}
+        />
 
-      <label htmlFor="username">User Name</label>
-      <input type="text" defaultValue={data.username} />
+        <label htmlFor="username">User Name</label>
+        <input type="text" name="username" defaultValue={data.username} />
 
-      <label htmlFor="website">Website</label>
-      <input type="text" defaultValue={data.website} />
+        <label htmlFor="website">Website</label>
+        <input type="text" name="website" defaultValue={data.website} />
 
-      <label htmlFor="avatar_url">Avatar</label>
-      <input type="text" defaultValue={data.avatar_url} />
+        {/* 画像をpostする */}
+        <label htmlFor="avatar_url">Avatar</label>
+        <input type="file" />
 
+        <input type="text" name="hoge" />
+        <button type="submit">Submit</button>
+      </form>
     </div>
   );
 
